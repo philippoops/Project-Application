@@ -15,3 +15,18 @@ body {
 .main {
   margin-top: 7em;
 }
+
+.masthead {
+  display: flex;
+  align-items: center;
+  background: rgb(238, 174, 202);
+  background: radial-gradient(
+    circle,
+    rgba(238, 174, 202, 1) 0%,
+    rgba(148, 187, 233, 1) 100%
+  ) !important;
+  height: 100vh;
+}
+.masthead h1.ui.header {
+  font-size: 4em;
+}
