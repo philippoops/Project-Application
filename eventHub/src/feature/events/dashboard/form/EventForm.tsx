@@ -1,9 +1,18 @@
 import { ChangeEvent, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Form, Header, Input, Segment } from 'semantic-ui-react';
+import { useAppDispatch, useAppSelector } from '../../../../store/store';
+import { createEvent, updateEvent } from '../../eventSlice';
+import { createId } from '@paralleldrive/cuid2';
 
 export default function EventForm() {
-  const initialValue = {
+  let { id } = useParams();
+  const event = useAppSelector((state) =>
+    state.events.events.find((e) => e.id === id)
+  );
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const initialValue = event ?? {
     title: '',
     category: '',
     description: '',
@@ -15,17 +24,19 @@ export default function EventForm() {
   const [values, setValues] = useState(initialValue);
 
   function onSubmit() {
-    console.log(values);
-    // selectedEvent
-    //   ? updateEvent({ ...selectedEvent, ...values })
-    //   : addEvent({
-    //       ...values,
-    //       id: createId(),
-    //       hostedBy: 'Gerry',
-    //       attendees: [],
-    //       hostPhotoURL: '',
-    //     });
-    // setFormOpen(false);
+    id = id ?? createId();
+    event
+      ? dispatch(updateEvent({ ...event, ...values }))
+      : dispatch(
+          createEvent({
+            ...values,
+            id,
+            hostedBy: 'Gerry',
+            attendees: [],
+            hostPhotoURL: '',
+          })
+        );
+    navigate(`/events/${id}`);
   }
 
   function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
@@ -34,7 +45,7 @@ export default function EventForm() {
   }
   return (
     <Segment clearing>
-      <Header content={'Create Event'} />
+      <Header content={event ? 'Update Event' : 'Create Event'} />
       <Form onSubmit={onSubmit}>
         <Form.Field>
           <Input
@@ -102,3 +113,32 @@ export default function EventForm() {
     </Segment>
   );
 }
+// function addEvent(
+//   arg0:
+//     | {
+//         id: any;
+//         hostedBy: string;
+//         attendees: never[];
+//         hostPhotoURL: string;
+//         title: string;
+//         date: string;
+//         category: string;
+//         description: string;
+//         city: string;
+//         venue: string;
+//       }
+//     | {
+//         id: any;
+//         hostedBy: string;
+//         attendees: never[];
+//         hostPhotoURL: string;
+//         title: string;
+//         category: string;
+//         description: string;
+//         city: string;
+//         venue: string;
+//         date: string;
+//       }
+// ): any {
+//   throw new Error('Function not implemented.');
+// }

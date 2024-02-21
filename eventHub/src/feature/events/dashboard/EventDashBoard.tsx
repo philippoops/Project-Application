@@ -1,15 +1,10 @@
 import { Grid } from 'semantic-ui-react';
 import EvenList from './EvenList';
-import { sampleData } from '../../../apps/api/sampleData';
-import { useEffect, useState } from 'react';
-import { AppEvent } from '../../../apps/layouts/types/event';
+
+import { useAppSelector } from '../../../store/store';
 
 export default function EventDashBoard() {
-  const [events, setEvents] = useState<AppEvent[]>([]);
-
-  useEffect(function () {
-    setEvents(sampleData);
-  }, []);
+  const { events } = useAppSelector((state) => state.events);
 
   return (
     <Grid>
