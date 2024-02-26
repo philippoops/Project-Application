@@ -2,11 +2,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import { testSlice } from '../feature/scratch/testSlice';
 import { eventSlice } from '../feature/events/eventSlice';
+import { modalSlice } from '../apps/common/modal/modalSlice';
+import { authSlice } from '../feature/auth/authSlice';
 
 export const store = configureStore({
   reducer: {
     test: testSlice.reducer,
     events: eventSlice.reducer,
+    modal: modalSlice.reducer,
+    auth: authSlice.reducer,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself
