@@ -1,6 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../layouts/App';
-import EvenList from '../../feature/events/dashboard/EvenList';
 import EventDashBoard from '../../feature/events/dashboard/EventDashBoard';
 import EventDetailedPage from '../../feature/events/details/EventDetailedPage';
 import EventForm from '../../feature/events/dashboard/form/EventForm';

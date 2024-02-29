@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Logo from './Logo';
+import Navigation from './Navigation';
 import Form from './Form';
 import PackagingList from './PackagingList';
 import Stats from './Stats';
@@ -29,7 +29,7 @@ export default function App() {
   return (
     <>
       <div className="app">
-        <Logo />
+        <Navigation />
         <Form onAddItems={handleAddItems} />
         <PackagingList
           itemList={items}

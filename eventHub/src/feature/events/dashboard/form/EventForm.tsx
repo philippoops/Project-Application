@@ -1,14 +1,22 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Form, Header, Segment } from 'semantic-ui-react';
-import { useAppDispatch, useAppSelector } from '../../../../store/store';
-import { createEvent, updateEvent } from '../../eventSlice';
-import { createId } from '@paralleldrive/cuid2';
-import { Controller, useForm } from 'react-hook-form';
+import { useAppSelector } from '../../../../store/store';
+
+import { Controller, FieldValues, useForm } from 'react-hook-form';
 import { categoryOptions } from './categoryOptions';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
+import { AppEvent } from '../../../../apps/layouts/types/event';
+import { Timestamp } from 'firebase/firestore';
+import { toast } from 'react-toastify';
+import { useFireStore } from '../../../../apps/hooks/firestore/useFireStore';
+import { useEffect } from 'react';
+import { actions } from '../../eventSlice';
+import LoadingComponents from '../../../../apps/layouts/LoadingComponents';
 
 export default function EventForm() {
+  // created usefireStore hook and its property
+  const { loadDocument, create, update } = useFireStore('events');
   const {
     register,
     handleSubmit,
@@ -17,32 +25,73 @@ export default function EventForm() {
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     mode: 'onTouched',
+    defaultValues: async () => {
+      if (event) return { ...event, date: new Date(event.date) };
+    },
   });
-  let { id } = useParams();
+  const { id } = useParams();
   const event = useAppSelector((state) =>
-    state.events.events.find((e) => e.id === id)
+    state.events.data.find((e) => e.id === id)
   );
-  const dispatch = useAppDispatch();
+  const { status } = useAppSelector((state) => state.events);
   const navigate = useNavigate();
 
-  function onSubmit(data: FieldValues) {
-    console.log(data);
-    id = id ?? createId();
-    event
-      ? dispatch(updateEvent({ ...event, ...data, date: data.date.toString() }))
-      : dispatch(
-          createEvent({
-            ...data,
-            id,
-            hostedBy: 'Gerry',
-            attendees: [],
-            hostPhotoURL: '',
-            date: data.date.toString(),
-          })
-        );
-    navigate(`/events/${id}`);
+  // create a useeffect
+  useEffect(() => {
+    if (!id) return;
+    loadDocument(id, actions);
+  }, [id, loadDocument]);
+  //  this function I get in the firestore firebase documentation update document
+  async function updateEvent(data: AppEvent) {
+    if (!event) return;
+    // use here was the update from custom hook usefireStore
+    await update(data.id, {
+      ...data,
+      date: Timestamp.fromDate(data.date as unknown as Date),
+    });
+  }
+  //  this function I get in the firestore firebase documentation add document
+
+  async function createEvent(data: FieldValues) {
+    // no need to put a id because it will generate it in the newref method
+    // const newEventRef = doc(collection(db, 'events'));
+
+    const ref = await create({
+      ...data,
+      hostedBy: 'Gerry',
+      attendees: [],
+      hostPhotoURL: '',
+      date: Timestamp.fromDate(data.date as unknown as Date),
+    });
+
+    return ref;
   }
 
+  async function handleCancelToggle(event: AppEvent) {
+    await update(event.id, {
+      isCancelled: !event.isCancelled,
+    });
+    toast.success(
+      `Event has been ${event.isCancelled ? 'uncancelled' : 'cancelled'}`
+    );
+  }
+  async function onSubmit(data: FieldValues) {
+    try {
+      if (event) {
+        await updateEvent({ ...event, ...data });
+        navigate(`/events/${event.id}`);
+      } else {
+        const ref = await createEvent(data);
+        navigate(`/events/${ref?.id}`);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+      console.log(error.message);
+    }
+  }
+
+  // put status loading to see if the app is loading
+  if (status === 'loading') return <LoadingComponents />;
   return (
     <Segment clearing>
       <Header content="Event details" sub color="teal" />
@@ -117,6 +166,15 @@ t andused a Controller from react hook from react dependencies
             )}
           />
         </Form.Field>
+        {event && (
+          <Button
+            type="button"
+            floated="left"
+            color={event.isCancelled ? 'green' : 'red'}
+            onClick={() => handleCancelToggle(event)}
+            content={event.isCancelled ? 'Reactivate event' : 'Cancel event'}
+          />
+        )}
 
         <Button
           loading={isSubmitting}

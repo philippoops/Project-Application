@@ -3,6 +3,7 @@ import {
   Icon,
   Item,
   ItemGroup,
+  Label,
   List,
   Segment,
   SegmentGroup,
@@ -10,15 +11,30 @@ import {
 import EventListAtendee from './EventListAtendee';
 import { AppEvent } from '../../../apps/layouts/types/event';
 import { Link } from 'react-router-dom';
-import { useAppDispatch } from '../../../store/store';
-import { deleteEvent } from '../eventSlice';
+
+// import { useFireStore } from '../../../apps/hooks/firestore/useFireStore';
 
 type Props = {
   event: AppEvent;
 };
 
 export default function EventListItem({ event }: Props) {
-  const dispatch = useAppDispatch();
+  // const [loading, setLoading] = useState(false);
+
+  //   // this a previous code iuse for reference
+
+  // async function removeEvent() {
+  //   // setLoading(true);
+  //   // try {
+  //   //   await deleteDoc(doc(db, 'events', event.id));
+  //   // } catch (error: any) {
+  //   //   console.log(error);
+  //   //   toast.error(error.message);
+  //   // } finally {
+  //   //   //  using this finally it will wait all try or catch block then after this is the one will run
+  //   //   setLoading(false);
+  //   }
+
   return (
     <SegmentGroup>
       <Segment>
@@ -32,6 +48,14 @@ export default function EventListItem({ event }: Props) {
             <Item.Content>
               <Item.Header>{event.title}</Item.Header>
               <Item.Description>{event.hostedBy}</Item.Description>
+              {event.isCancelled && (
+                <Label
+                  style={{ top: '-40px' }}
+                  ribbon="right"
+                  color="red"
+                  content="This event has been cancelled"
+                />
+              )}
             </Item.Content>
           </Item>
         </ItemGroup>
@@ -55,12 +79,13 @@ export default function EventListItem({ event }: Props) {
 
       <Segment clearing>
         <span>{event.description}</span>
-        <Button
-          onClick={() => dispatch(deleteEvent(event.id))}
+        {/* <Button
+          // loading={loading}
+          onClick={() => remove(event.id)}
           color="red"
           floated="right"
           content="Delete"
-        />
+        /> */}
         <Button
           as={Link}
           to={`/events/${event.id}`}

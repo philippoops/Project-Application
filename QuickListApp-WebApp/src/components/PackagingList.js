@@ -38,7 +38,12 @@ export default function PackagingList({
           <option value="description">Sort by description</option>
           <option value="packed">Sort by packed status</option>
         </select>
-        <button onClick={onHandleClearlist}>Clear list</button>
+        <button
+          disabled={sortedItems.length === 0 ? true : false}
+          onClick={onHandleClearlist}
+        >
+          Clear list
+        </button>
       </div>
     </div>
   );
