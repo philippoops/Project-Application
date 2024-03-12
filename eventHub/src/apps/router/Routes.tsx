@@ -4,6 +4,7 @@ import EventDashBoard from '../../feature/events/dashboard/EventDashBoard';
 import EventDetailedPage from '../../feature/events/details/EventDetailedPage';
 import EventForm from '../../feature/events/dashboard/form/EventForm';
 import Scratch from '../../feature/scratch/Scratch';
+import AccountPage from '../../feature/auth/AccountPage';
 
 export const routes = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const routes = createBrowserRouter([
       {
         path: '/createEvent',
         element: <EventForm key="create" />,
+      },
+      {
+        path: '/account',
+        element: <AccountPage />,
       },
       {
         path: '/scratch',
