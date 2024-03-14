@@ -4,6 +4,8 @@ import { testSlice } from '../feature/scratch/testSlice';
 import { eventSlice } from '../feature/events/eventSlice';
 import { modalSlice } from '../apps/common/modal/modalSlice';
 import { authSlice } from '../feature/auth/authSlice';
+import { profileSlice } from '../feature/profile/profileSlice';
+import { photoSlice } from '../feature/profile/photosSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +13,8 @@ export const store = configureStore({
     events: eventSlice.reducer,
     modal: modalSlice.reducer,
     auth: authSlice.reducer,
+    profiles: profileSlice.reducer,
+    photos: photoSlice.reducer,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself

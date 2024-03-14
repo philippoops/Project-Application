@@ -3,8 +3,11 @@ import { initializeApp } from 'firebase/app';
 import 'firebase/firestore';
 // Importing firbase/auth
 import 'firebase/auth';
+// import the firebase storage
+import 'firebase/storage';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getStorage } from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -25,3 +28,4 @@ const app = initializeApp(firebaseConfig);
 // use the getFirestore that has full package not the LITE version because the LITE version has limited function
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const storage = getStorage(app);

@@ -28,7 +28,12 @@ export default function SignInMenu() {
             text="Create event"
             icon="plus"
           />
-          <Dropdown.Item text="My profile" icon="user" />
+          <Dropdown.Item
+            as={Link}
+            to={`/profiles/${currentUser?.uid}`}
+            text="My profile"
+            icon="user"
+          />
           <Dropdown.Item
             as={Link}
             to="/account"
