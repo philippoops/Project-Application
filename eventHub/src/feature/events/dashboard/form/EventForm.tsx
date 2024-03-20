@@ -7,7 +7,7 @@ import { categoryOptions } from './categoryOptions';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { AppEvent } from '../../../../apps/layouts/types/event';
-import { Timestamp } from 'firebase/firestore';
+import { Timestamp, arrayUnion } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { useFireStore } from '../../../../apps/hooks/firestore/useFireStore';
 import { useEffect } from 'react';
@@ -34,6 +34,7 @@ export default function EventForm() {
     state.events.data.find((e) => e.id === id)
   );
   const { status } = useAppSelector((state) => state.events);
+  const { currentUser } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   // create a useeffect
@@ -55,12 +56,18 @@ export default function EventForm() {
   async function createEvent(data: FieldValues) {
     // no need to put a id because it will generate it in the newref method
     // const newEventRef = doc(collection(db, 'events'));
-
+    if (!currentUser) return;
     const ref = await create({
       ...data,
-      hostedBy: 'Gerry',
-      attendees: [],
-      hostPhotoURL: '',
+      hostUid: currentUser.uid,
+      hostedBy: currentUser.displayName,
+      hostPhotoURL: currentUser.photoURL,
+      attendees: arrayUnion({
+        id: currentUser.uid,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+      }),
+      attendeeIds: arrayUnion(currentUser.uid),
       date: Timestamp.fromDate(data.date as unknown as Date),
     });
 

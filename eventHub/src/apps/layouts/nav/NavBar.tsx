@@ -3,22 +3,22 @@ import { Button, Container, Menu, MenuItem } from 'semantic-ui-react';
 import SignOutButton from './SignOutButton';
 import SignInMenu from './SignInMenu';
 import { useAppSelector } from '../../../store/store';
-import { sampleData } from '../../api/sampleData';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
+// import { sampleData } from '../../api/sampleData';
+// import { doc, setDoc } from 'firebase/firestore';
+// import { db } from '../../config/firebase';
 
 export default function NavBar() {
   const { authenticated } = useAppSelector((state) => state.auth);
 
-  function seedData() {
-    sampleData.forEach(async (event) => {
-      const { id, ...rest } = event;
+  // function seedData() {
+  //   sampleData.forEach(async (event) => {
+  //     const { id, ...rest } = event;
 
-      await setDoc(doc(db, 'events', id), {
-        ...rest,
-      });
-    });
-  }
+  //     await setDoc(doc(db, 'events', id), {
+  //       ...rest,
+  //     });
+  //   });
+  // }
 
   return (
     <Menu inverted={true} fixed="top">
@@ -42,7 +42,7 @@ export default function NavBar() {
           />
         </MenuItem>
         {/* This process use to send the data to the firestore database */}
-        {import.meta.env.DEV && (
+        {/* {import.meta.env.DEV && (
           <MenuItem>
             <Button
               inverted={true}
@@ -51,7 +51,7 @@ export default function NavBar() {
               onClick={seedData}
             />
           </MenuItem>
-        )}
+        )} */}
         {authenticated ? <SignInMenu /> : <SignOutButton />}
       </Container>
     </Menu>

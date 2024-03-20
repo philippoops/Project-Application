@@ -2,27 +2,43 @@ import { Grid } from 'semantic-ui-react';
 import EvenList from './EvenList';
 
 import { useAppSelector } from '../../../store/store';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import LoadingComponents from '../../../apps/layouts/LoadingComponents';
 import { actions } from '../eventSlice';
 import { useFireStore } from '../../../apps/hooks/firestore/useFireStore';
+import EventFilters from './EventFilters';
+import { QueryOptions } from '../../../apps/hooks/firestore/types';
+import EventListItemPlaceholder from './EventListItemPlaceholder';
 
 export default function EventDashBoard() {
+  const contextRef = useRef(null);
   const { data: events, status } = useAppSelector((state) => state.events);
   const { loadCollection } = useFireStore('events');
+  const [query, setQuery] = useState<QueryOptions[]>([
+    { attribute: 'date', operator: '>=', value: new Date() },
+  ]);
   useEffect(() => {
-    loadCollection(actions);
-  }, [loadCollection]);
+    loadCollection(actions, {
+      queries: query,
+    });
+  }, [loadCollection, query]);
 
-  if (status === 'loading') return <LoadingComponents />;
   return (
     <Grid>
-      <Grid.Column width={10}>
-        <EvenList events={events} />
+      <Grid.Column width={10} ref={contextRef}>
+        {status === 'loading' ? (
+          <>
+            <EventListItemPlaceholder />
+            <EventListItemPlaceholder />
+          </>
+        ) : (
+          <EvenList events={events} />
+        )}
       </Grid.Column>
       <Grid.Column width={6}>
-        <h2>Filters</h2>
+        <div className="ui fixed top sticky" style={{ top: 98, width: 405 }}>
+          <EventFilters setQuery={setQuery} />
+        </div>
       </Grid.Column>
     </Grid>
   );

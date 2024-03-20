@@ -12,6 +12,8 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { toast } from 'react-toastify';
+import { CollectionOptions } from './types';
+import { getQuery } from './getQuery';
 // this code is create for firestore setup
 type ListenerState = {
   name?: string;
@@ -39,9 +41,9 @@ export const useFireStore = <T extends DocumentData>(path: string) => {
   const dispatch = useAppDispatch();
 
   const loadCollection = useCallback(
-    (actions: GenericAction<T>) => {
+    (actions: GenericAction<T>, options?: CollectionOptions) => {
       dispatch(actions.loading());
-      const query = collection(db, path);
+      const query = getQuery(path, options);
 
       const listener = onSnapshot(query, {
         next: (querySnapshot) => {
