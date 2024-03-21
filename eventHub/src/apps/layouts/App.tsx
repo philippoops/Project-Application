@@ -1,7 +1,7 @@
 import { Container } from 'semantic-ui-react';
 import NavBar from './nav/NavBar';
 
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
 import HomePage from '../../feature/home/HomePage';
 import ModalManager from '../common/modal/ModalManager';
 import { onAuthStateChanged } from 'firebase/auth';
@@ -34,6 +34,8 @@ function App() {
         <HomePage />
       ) : (
         <>
+          {/* scrollrestoration is a react router dom use to back on the top of the page */}
+          <ScrollRestoration />
           <ModalManager />
           <NavBar />
           <Container className="main">

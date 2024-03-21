@@ -11,6 +11,7 @@ import {
 import EventListAtendee from './EventListAtendee';
 import { AppEvent } from '../../../apps/layouts/types/event';
 import { Link } from 'react-router-dom';
+import { format } from 'date-fns';
 
 // import { useFireStore } from '../../../apps/hooks/firestore/useFireStore';
 
@@ -62,7 +63,8 @@ export default function EventListItem({ event }: Props) {
       </Segment>
       <Segment>
         <span>
-          <Icon name="clock" /> {event.date}
+          <Icon name="clock" />{' '}
+          {format(new Date(event.date), 'dd MMM yyy, h:mm a')}
         </span>
 
         <span>
