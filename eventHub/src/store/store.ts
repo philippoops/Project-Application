@@ -6,6 +6,7 @@ import { modalSlice } from '../apps/common/modal/modalSlice';
 import { authSlice } from '../feature/auth/authSlice';
 import { profileSlice } from '../feature/profile/profileSlice';
 import { photoSlice } from '../feature/profile/photosSlice';
+import { followSlice } from '../feature/profile/follow/followSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     auth: authSlice.reducer,
     profiles: profileSlice.reducer,
     photos: photoSlice.reducer,
+    follows: followSlice.reducer,
   },
 });
 // Infer the `RootState` and `AppDispatch` types from the store itself
